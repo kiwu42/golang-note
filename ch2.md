@@ -465,6 +465,150 @@ func PopCount(x uint64) int {
 }
 ```
 ## 2.7. Scope
+一個被宣告的 identfier 的 Scope，是指能存取 identfier 的程式碼片段。
+**syntatic block**
+被{}包圍的區塊
+** lexical block**
+就是 scope
+舉例來說:
+| Declaration | scope |
+| ----------- | ----------- |
+| built-in type(len, int) |universe
+block 整個程式都能用|
+| package-level | 同個 package 裡的所有檔案 |
+| file-level(import "fmt") | 有 import 的檔案|
+| local | function 內的某一塊|
+| flow control(break, continue) | for loop 之類的 |
+當 identifier 命名不明確，會從最內層開始往外找。
+```go
+package main
+
+import "fmt"
+
+func f() {}
+
+var g = "g"
+
+func main() {
+	f := "f"
+	fmt.Println(f) // "f"; local var f shadows package-level func f
+	fmt.Println(g) // "g"; package-level var
+	fmt.Println(h) // compile error: undefined: h
+}
+```
+**implicit blocks**
+for loops & if & switch 除了在 body 有可見的 blocks，也包含 implicit blocks
+像是下面的程式 else if 裡除了 body 的fmt.Println(x, y)也可以存取第一個 if 宣告的 x
+```go
+if x := f(); x == 0 {
+	fmt.Println(x)
+} else if y := g(x); x == y {
+	fmt.Println(x, y)
+} else {
+	fmt.Println(x, y)
+}
+fmt.Println(x, y) // compile error: x and y are not visible here
+```
+**declaration order**
+package level 沒差
+但 local 有差
+舉例來說，f 的 scope 只在 if 裡面，所以下面超出 scope 的程式碼就無法存取 f。
+```go
+if f, err := os.Open(fname); err != nil { // compile error: unused: f
+return err
+}
+f.ReadByte() // compile error: undefined f
+f.Close() // compile error: undefined f
+```
+可以修改成這樣
+```go
+f, err := os.Open(fname)
+if err != nil {
+	return err
+}
+f.ReadByte()
+f.Close()
+```
+Q: 阿為什麼不直接像下面用個else就好?
+因為 GO 不喜歡你這樣做XD
+GO 不建議縮排會被正常執行的code
+```go
+if f, err := os.Open(fname); err != nil {
+	return err
+} else {
+	// f and err are visible here too
+	f.ReadByte()
+	f.Close()
+}
+```
+> 最後一個例子了!!!剛好是凌晨兩點 XD
+
+cwd 被重新宣告成 local varible 了，結果 main 居然還沒用(那幹嘛宣告直接用_就好了嘛XDD
+```go
+package main
+
+import (
+	"log"
+	"os"
+)
+
+var cwd string
+
+func main() {
+	cwd, err := os.Getwd() // cwd declared but not used
+
+	if (err) != nil {
+		log.Fatal("os.Getwd failed: %v", err)
+	}
+}
+```
+> 那如果我 main print 一下 cmd 是不是就用到了
+```go
+package main
+
+import (
+	"log" // 我把 os 去掉了XD
+)
+
+var cwd string = "我在這裡啊，你沒用到我還宣告我是怎樣"
+
+func main() {
+	cwd, err := "情況從糟糕變成難以理解", ""
+
+	if (err) != "" {
+		log.Fatal("os.Getwd failed: %v", err)
+	}
+	log.Printf("Working directory = %s", cwd)// 恩 果然沒跳error 不愧是我
+	// 也是 Output: 情況從糟糕變成難以理解
+}
+```
+可以看到我們 global 的`var cwd string = "我在這裡啊，你沒用到我還宣告我是怎樣"`是初始了個心酸
+而且還沒跳error
+真的是 情況從糟糕變成難以理解
+沒事 我們可以這樣做
+不要亂宣告(:=) 改成 assign(=)
+就會用到我們預期要使用的 global cmd 了 是不是很酷
+```go
+package main
+
+import (
+  "log"
+  "os"
+)
+
+var cwd string
+
+func main() {
+  var err error
+
+  cwd, err = os.Getwd()
+
+  if (err) != nil {
+    log.Fatal("os.Getwd failed: %v", err)
+  }
+}
+```
+
 ## Resource
 - The Go Programming Language Specification: https://go.dev/ref/spec
 - golang-study-group: https://github.com/sean1093/golang-study-group/blob/master/Notes/Chapter%202%20%E7%A8%8B%E5%BC%8F%E7%B5%90%E6%A7%8B.md
