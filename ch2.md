@@ -256,8 +256,54 @@ Usage of ./echo4:
 separator (default " ")
 ```
 ### The new Function
+Predeclared Function
+1. 創一個沒命名的 variable(type 為 T)
+2. 將 variable 初始化為 T 的零值
+3. 回傳 T 的 address
 
+```go
+p := new(T)
+
+//example
+p := new(int) // p, of type *int, points to an unnamed int variable
+fmt.Println(*p) // "0"
+*p = 2 // sets the unnamed int to 2
+fmt.Println(*p) // "2"
+```
+所以這兩個 function 其實是一樣的
+```go
+func newInt1() *int {
+  return new(int)
+}
+
+func newInt2() *int {
+  var dummy int
+  return &dummy
+}
+```
+幾乎每次呼叫 new 都會回傳不同的 address
+除了一個特例：變數沒有定義，也就是說它的大小為零，如:struct{}, [0]int
+```go
+// Each call to new returnsadistinc t var iable wit h a unique address
+p := new(int)
+q := new(int)
+fmt.Println(p == q) // "false"
+
+// exception
+arr1 := [1]int{0}
+arr2 := [1]int{0}
+fmt.Println(arr1 == arr2) // "true"
+```
 ### Lifetime of Variables
+在程式執行的時候，variable 存在的時間區間。
+| Declaration | lifetime | default allocate |
+| ----------- | ----------- | ----------- |
+| package-level | 程式的執行時間 | heap |
+| local | 動態安排(宣告到不再被引用) | stack |
+
+不再被引用:unreachable
+
+Note: Go 有 Garbage collection 的機制
 
 ## 2.4. Assignments
 ### Tuple Assignment
