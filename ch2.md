@@ -396,7 +396,74 @@ func main() {
 ```
 ## 2.6. Packages and Files
 ### Imports
+import path: `gopl.io/ch2/tempconv`
+package name:　tempconv
+```go
+// Cf converts its numeric argument to Celsius and Fahrenheit.
+package main
+
+import (
+	"fmt"
+	"os"
+	"strconv"
+
+	"gopl.io/ch2/tempconv"
+)
+
+func main() {
+	for _, arg := range os.Args[1:] {
+		t, err := strconv.ParseFloat(arg, 64)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "cf: %v\n", err)
+			os.Exit(1)
+		}
+		f := tempconv.Fahrenheit(t)
+		c := tempconv.Celsius(t)
+		fmt.Printf("%s = %s, %s = %s\n",
+			f, tempconv.FToC(f), c, tempconv.CToF(c))
+	}
+}
+```
+
 ### Package Initialization
+Package 初始化會依照宣告順序初始 package-level variables，除非有相依性。
+如果 Package 有很多 .go檔，go tool 會先依照檔名排序後再叫 compiler。
+```go
+var a = b + c // a initialized third, to 3
+var b = f() // b initialized second, to 2, by calling f
+var c = 1 // c initialized first, to 1
+func f() int { return c + 1 }
+```
+**init function**
+
+- 有些 variable 的初始化比較複雜，可以使用 init function
+- init function 不能被呼叫或存取
+- 當程式執行時，會自動依照 init functionS 被宣告的順序來一一執行它們。
+
+```go
+package popcount
+
+// pc[i] is the population count of i.
+var pc [256]byte
+
+func init() {
+	for i := range pc {
+		pc[i] = pc[i/2] + byte(i&1)
+	}
+}
+
+// PopCount returns the population count (number of set bits) of x.
+func PopCount(x uint64) int {
+	return int(pc[byte(x>>(0*8))] +
+		pc[byte(x>>(1*8))] +
+		pc[byte(x>>(2*8))] +
+		pc[byte(x>>(3*8))] +
+		pc[byte(x>>(4*8))] +
+		pc[byte(x>>(5*8))] +
+		pc[byte(x>>(6*8))] +
+		pc[byte(x>>(7*8))])
+}
+```
 ## 2.7. Scope
 ## Resource
 - The Go Programming Language Specification: https://go.dev/ref/spec
