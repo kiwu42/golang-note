@@ -114,10 +114,158 @@ func fToc(f float64) float64 {
 > 
 > 在同個 package 裡可以共用 package-level 的 Identifier。
 ## 2.3. Variables
+### Variable Declarations
+```go
+// general form
+var name type = expression
+
+// Omit type
+var happy = "happy"
+fmt.Printf("happy: %s\n", reflect.TypeOf(happy)) // happy: string
+
+// Omit expression
+var s string
+fmt.Println(s) // ""
+
+// Omit type and allow multiple varible declaration 
+var i, j, k int // int, int, int
+var b, f, s = true, 2.3, "four" // bool, float64, string
+```
+### Zero-Value Mechanism
+確保每個變數都有 well-defined 的值。
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var i int
+	var f float64
+	var b bool
+	var s string
+	fmt.Printf("%v %v %v %q\n", i, f, b, s)
+	// Output:
+	// 0 0 false ""
+	// array, struct: all elements hold zero value.
+}
+```
+### Short Variable Declarations
+在 function 內可以用 Short Variable Declarations 宣告並初始化 local variable。
+```go
+name := expression
+```
+Example:
+```go
+package main
+
+import "fmt"
+
+const boilingF = 212.0
+
+func main() {
+  f := boilingF
+  c := (f - 32) * 5 / 9
+  fmt.Printf("boiling point = %g F or %gC\n", f, c)
+}
+```
+Special case:
+```go
+i, j = j, i // swap values of i and j
+```
+Note:
+- 等號左邊可以有多個 varible
+- 等號左邊必須要有一個新的 varible 被宣告
+```go
+f, err := os.Open(infile)
+// ...
+f, err := os.Create(outfile) // compile error: no new variables
+```
+```go
+f, err := os.Open(infile)
+// ...
+f, err = os.Create(outfile) // fixxed
+```
+### Pointers
+Pointers 儲存 variable 的位址。
+```go
+package main
+
+import "fmt"
+
+func main() {
+	x := 1
+	p := &x // p, of type *int, points to x's address
+	fmt.Println(*p) // "1"
+	*p = 2 // equivalent to x = 2
+	fmt.Println(x) // "2"
+}
+```
+每次呼叫 f() 都回傳不同的值( local variable 在 function 內被重新分配位址
+```go
+func f() *int {
+  v := 1
+  return &v
+}
+fmt.Println(f() == f()) // "false"
+```
+
+```go
+func incr(p *int) int {
+*p++ // increments what p points to; does not change p's value
+return *p
+}
+v := 1
+incr(&v) // side effect: v is now 2
+fmt.Println(incr(&v)) // "3" (and v is 3)
+```
+flag package 就是用到 Pointer 的概念
+```go
+package main
+
+import (
+  "flag"
+  "fmt"
+  "strings"
+)
+
+var n = flag.Bool("n", false, "omit trailing newline")
+var sep = flag.String("s", " ", "seperator")
+
+func main() {
+  flag.Parse() 
+  fmt.Print(strings.Join(flag.Args(), *sep)) 
+
+  if !*n {
+    fmt.Println();
+  }
+}
+```
+```
+Let’s run som e test cases on echo:
+$ go build gopl.io/ch2/echo4
+$ ./echo4 a bc def
+a bc def
+$ ./echo4 -s / a bc def(用/取代空白)
+a/bc/def
+$ ./echo4 -n a bc def(忽略換行)
+a bc def$
+$ ./echo4 -help
+Usage of ./echo4:
+-n omit trailing newline
+-s string
+separator (default " ")
+```
+### The new Function
+
+### Lifetime of Variables
+
 ## 2.4. Assignments
+### Tuple Assignment
+### Assignability
 ## 2.5. Type Declarations
 ## 2.6. Packages and Files
-
+### Imports
+### Package Initialization
 ## 2.7. Scope
 ## Resource
 - The Go Programming Language Specification: https://go.dev/ref/spec
