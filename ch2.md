@@ -364,8 +364,10 @@ Celsius(攝氏), Fahrenheit(華氏) 都是以 float64 為 underlying type 宣告
 - 需要重新定義轉換型別(conversion)的function(CToF and FToC)
 - 如果直接呼叫 Celsius(t) 或 Fahrenheit(t)，會把 t 直接轉成 float64，t 的值不會變，不是我們要的結果
 ```go
-// Package tempconv performs Celsius and Fahrenheit temperature computations.
-package tempconv
+// Package main performs Celsius and Fahrenheit temperature computations.
+package main
+
+import "fmt"
 
 type Celsius float64
 type Fahrenheit float64
@@ -378,6 +380,19 @@ const (
 
 func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9/5 + 32) }
 func FToC(f Fahrenheit) Celsius { return Celsius((f - 32) * 5 / 9) }
+
+func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
+func main() {
+	c := FToC(212.0)
+
+	fmt.Println(c.String()) // 100°C
+	fmt.Println("%v\n", c)  // 100°C
+	fmt.Println("%s\n", c)  // 100°C
+	fmt.Println(c)          // 100°C
+	fmt.Println("%g\n", c)  // expect 100, but get "100°C"
+	fmt.Println(float64(c)) // 100
+}
+
 ```
 ## 2.6. Packages and Files
 ### Imports
