@@ -306,8 +306,58 @@ fmt.Println(arr1 == arr2) // "true"
 Note: Go 有 Garbage collection 的機制
 
 ## 2.4. Assignments
+```go
+x=1 // named variable
+*p = true // indirect variable
+person.name = "bob" // struct field
+
+count[x] = count[x] * scale // array or slice or map element
+count[x] *= scale
+
+// Numeric variables can use ++ --
+v := 1
+v++ // same as v = v + 1; v becomes 2
+v-- // same as v = v - 1; v becomes 1 again
+```
 ### Tuple Assignment
+一次更新多個等號左邊的 variable。
+```go
+x, y = y, x
+a[i], a[j] = a[j], a[i]
+
+func fib(n int) int {
+	x, y := 0, 1
+	for i := 0; i < n; i++ {
+		x, y = y, x+y
+	}
+	return x
+}
+```
+等號右邊可以是一個回傳多個值的 function
+```go
+f, err = os.Open("foo.txt") // function call returns two values
+
+v, ok = m[key] // map lookup
+v, ok = x.(T) // type assertion
+v, ok = <-ch // channel receive
+```
+用不到的值可以 assign 給佔位符(blank identifier)
+```go
+_, err = io.Copy(dst, src) // discard byte count
+_, ok = x.(T) // check type but discard result
+```
 ### Assignability
+等號左右邊的型別要一樣才可以進行 assign。
+```go
+package main
+
+func main() {
+	y := 2
+	y = "2"
+	// Output:
+	// error: cannot use "2" (untyped string constant) as int value in assignment
+}
+```
 ## 2.5. Type Declarations
 ## 2.6. Packages and Files
 ### Imports
