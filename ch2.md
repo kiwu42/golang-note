@@ -108,11 +108,6 @@ func fToc(f float64) float64 {
 // 212 F = 100 C
 ```
 
-> Q: package main 意思?
-> 
-> 一個 go 程式是由數個 package 組成，而 package 是由數個 source code (.go 檔)組成。
-> 
-> 在同個 package 裡可以共用 package-level 的 Identifier。
 ## 2.3. Variables
 ### Variable Declarations
 ```go
@@ -466,6 +461,14 @@ func PopCount(x uint64) int {
 		pc[byte(x>>(7*8))])
 }
 ```
+### Q: package main 意思?
+
+一個 go 程式是由數個 package 組成，而 package 是由數個 source code (.go 檔)組成。
+
+在同個 package 裡可以共用 package-level 的 Identifier。
+
+> 檔案結構：https://github.com/sean1093/golang-study-group/blob/master/Notes/Chapter%202%20%E7%A8%8B%E5%BC%8F%E7%B5%90%E6%A7%8B.md#6-%E5%A5%97%E4%BB%B6%E8%88%87%E6%AA%94%E6%A1%88
+
 ## 2.7. Scope
 一個被宣告的 identfier 的 Scope，是指能存取 identfier 的程式碼片段。
 
@@ -522,6 +525,7 @@ if x := f(); x == 0 {
 fmt.Println(x, y) // compile error: x and y are not visible here
 ```
 **declaration order**
+
 package level 沒差
 
 但 local 有差
