@@ -502,7 +502,9 @@ func main() {
 	fmt.Println(h) // compile error: undefined: h
 }
 ```
+
 **implicit blocks**
+
 for loops & if & switch 除了在 body 有可見的 blocks，也包含 implicit blocks
 像是下面的程式 else if 裡除了 body 的fmt.Println(x, y)也可以存取第一個 if 宣告的 x
 ```go
