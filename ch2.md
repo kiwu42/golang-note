@@ -431,7 +431,7 @@ var b = f() // b initialized second, to 2, by calling f
 var c = 1 // c initialized first, to 1
 func f() int { return c + 1 }
 ```
-**init function**
+### init function
 
 - 有些 variable 的初始化比較複雜，可以使用 init function
 - init function 不能被呼叫或存取
@@ -472,11 +472,11 @@ func PopCount(x uint64) int {
 ## 2.7. Scope
 一個被宣告的 identfier 的 Scope，是指能存取 identfier 的程式碼片段。
 
-**syntatic block**
+### syntatic block
 
 被{}包圍的區塊
 
-**lexical block**
+### lexical block
 
 就是 scope 
 
@@ -509,7 +509,7 @@ func main() {
 }
 ```
 
-**implicit blocks**
+### implicit blocks
 
 for loops & if & switch 除了在 body 有可見的 blocks，也包含 implicit blocks
 
@@ -524,7 +524,7 @@ if x := f(); x == 0 {
 }
 fmt.Println(x, y) // compile error: x and y are not visible here
 ```
-**declaration order**
+### declaration order
 
 package level 沒差
 
