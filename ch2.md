@@ -467,10 +467,15 @@ func PopCount(x uint64) int {
 ## 2.7. Scope
 一個被宣告的 identfier 的 Scope，是指能存取 identfier 的程式碼片段。
 **syntatic block**
+
 被{}包圍的區塊
-** lexical block**
-就是 scope
+
+**lexical block**
+
+就是 scope 
+
 舉例來說:
+
 | Declaration | scope |
 | ----------- | ----------- |
 | built-in type(len, int) |universe
@@ -479,6 +484,7 @@ block 整個程式都能用|
 | file-level(import "fmt") | 有 import 的檔案|
 | local | function 內的某一塊|
 | flow control(break, continue) | for loop 之類的 |
+
 當 identifier 命名不明確，會從最內層開始往外找。
 ```go
 package main
