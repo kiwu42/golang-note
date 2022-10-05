@@ -547,8 +547,10 @@ Q: 阿為什麼不直接像下面用個else就好?
 
 因為 GO 不喜歡你這樣做XD
 
+GO 不建議縮排會被正常執行的code (Avoid nesting by handling errors first)
 
-GO 不建議縮排會被正常執行的code
+https://go.dev/talks/2013/bestpractices.slide#4
+
 ```go
 if f, err := os.Open(fname); err != nil {
 	return err
