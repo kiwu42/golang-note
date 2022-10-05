@@ -281,7 +281,8 @@ func newInt2() *int {
   return &dummy
 }
 ```
-幾乎每次呼叫 new 都會回傳不同的 address
+幾乎每次呼叫 new 都會回傳不同的 address 
+
 除了一個特例：變數沒有定義，也就是說它的大小為零，如:struct{}, [0]int
 ```go
 // Each call to new returnsadistinc t var iable wit h a unique address
@@ -427,6 +428,7 @@ func main() {
 
 ### Package Initialization
 Package 初始化會依照宣告順序初始 package-level variables，除非有相依性。
+
 如果 Package 有很多 .go檔，go tool 會先依照檔名排序後再叫 compiler。
 ```go
 var a = b + c // a initialized third, to 3
@@ -507,6 +509,7 @@ func main() {
 **implicit blocks**
 
 for loops & if & switch 除了在 body 有可見的 blocks，也包含 implicit blocks
+
 像是下面的程式 else if 裡除了 body 的fmt.Println(x, y)也可以存取第一個 if 宣告的 x
 ```go
 if x := f(); x == 0 {
@@ -520,7 +523,9 @@ fmt.Println(x, y) // compile error: x and y are not visible here
 ```
 **declaration order**
 package level 沒差
+
 但 local 有差
+
 舉例來說，f 的 scope 只在 if 裡面，所以下面超出 scope 的程式碼就無法存取 f。
 ```go
 if f, err := os.Open(fname); err != nil { // compile error: unused: f
@@ -539,7 +544,10 @@ f.ReadByte()
 f.Close()
 ```
 Q: 阿為什麼不直接像下面用個else就好?
+
 因為 GO 不喜歡你這樣做XD
+
+
 GO 不建議縮排會被正常執行的code
 ```go
 if f, err := os.Open(fname); err != nil {
@@ -550,7 +558,7 @@ if f, err := os.Open(fname); err != nil {
 	f.Close()
 }
 ```
-> 最後一個例子了!!!剛好是凌晨兩點 XD
+> 最後一個例子了!!!
 
 cwd 被重新宣告成 local varible 了，結果 main 居然還沒用(那幹嘛宣告直接用_就好了嘛XDD
 ```go
@@ -592,10 +600,15 @@ func main() {
 }
 ```
 可以看到我們 global 的`var cwd string = "我在這裡啊，你沒用到我還宣告我是怎樣"`是初始了個心酸
+
 而且還沒跳error
+
 真的是 情況從糟糕變成難以理解
+
 沒事 我們可以這樣做
+
 不要亂宣告(:=) 改成 assign(=)
+
 就會用到我們預期要使用的 global cmd 了 是不是很酷
 ```go
 package main
