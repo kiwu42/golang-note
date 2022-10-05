@@ -466,6 +466,7 @@ func PopCount(x uint64) int {
 ```
 ## 2.7. Scope
 一個被宣告的 identfier 的 Scope，是指能存取 identfier 的程式碼片段。
+
 **syntatic block**
 
 被{}包圍的區塊
